@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 // O(n^2)
 pub fn two_sum_original(nums: Vec<i32>, target: i32) -> Vec<i32> {
     let len = nums.len();
@@ -20,7 +22,7 @@ pub fn two_sum_original(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 // O(2n) ?.. I'll admit I am terrible at Big-O
-pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+pub fn two_sum_better(nums: Vec<i32>, target: i32) -> Vec<i32> {
     let len = nums.len();
 
     for x in 0..len {
@@ -33,6 +35,31 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
             let val2 = *(nums.get(y).unwrap());
             if val1 + val2 == target {
                 return Vec::from([x as i32, y as i32]);
+            }
+        }
+    }
+
+    Vec::new()
+}
+
+// Using a suggestion from leetcode's responses, looks to be.. O(n)
+pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let len = nums.len();
+    let mut vals = HashMap::<i32, usize>::new();
+
+    for x in 0..len {
+        let val = *(nums.get(x).unwrap());
+        let opposite = target - val;
+        let existing_opposite = vals.get(&opposite);
+
+        match existing_opposite {
+            Some(y) => {
+                let mut res = vec![x as i32, *y as i32];
+                res.sort();
+                return res;
+            }
+            None => {
+                vals.insert(val, x);
             }
         }
     }
